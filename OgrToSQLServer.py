@@ -81,6 +81,7 @@ class OgrToSQLServer(GdalAlgorithm):
     PROMOTETOMULTI = 'PROMOTETOMULTI'
     MSSQLSPATIAL_USE_GEOMETRY_COLUMNS = 'MSSQLSPATIAL_USE_GEOMETRY_COLUMNS'
     MSSQLSPATIAL_USE_BCP = 'MSSQLSPATIAL_USE_BCP'
+    TRUSTED_SECURITY = 'TRUSTED_SECURITY'
     OPTIONS = 'OPTIONS'
 
     def __init__(self):
@@ -186,6 +187,9 @@ class OgrToSQLServer(GdalAlgorithm):
         self.addParameter(QgsProcessingParameterBoolean(self.MSSQLSPATIAL_USE_BCP,
                                                         self.tr('Enable bulk insert when adding features'),
                                                         defaultValue=False))
+        self.addParameter(QgsProcessingParameterBoolean(self.TRUSTED_SECURITY,
+                                                        self.tr('Use Trusted Security (Windows Authentication)'),
+                                                        defaultValue=False))
         self.addParameter(QgsProcessingParameterString(self.OPTIONS,
                                                        self.tr('Additional creation options'), defaultValue='',
                                                        optional=True))
@@ -211,6 +215,7 @@ class OgrToSQLServer(GdalAlgorithm):
         server = self.parameterAsString(parameters, self.SERVER, context)
         driver = self.parameterAsString(parameters, self.DRIVER, context)
         database = self.parameterAsString(parameters, self.DATABASE, context)
+        trusted_security = self.parameterAsBool(parameters, self.TRUSTED_SECURITY, context)
         uid = self.parameterAsString(parameters, self.UID, context)
         pwd = self.parameterAsString(parameters, self.PWD, context)
         schema = self.parameterAsString(parameters, self.SCHEMA, context)
@@ -221,10 +226,15 @@ class OgrToSQLServer(GdalAlgorithm):
             arguments.append('driver={' + driver + '};')
         if database:
             arguments.append('database=' + database + ';')
-        if uid:
-            arguments.append('uid=' + uid + ';')
-        if pwd:
-            arguments.append('pwd=' + pwd + ';')
+        if trusted_security:
+            arguments.append('trusted_security=' + trusted_security.toString() + ';'
+        else
+        {
+            if uid:
+                arguments.append('uid=' + uid + ';')
+            if pwd:
+                arguments.append('pwd=' + pwd + ';')
+        }
         if schema:
             arguments.append('active_schema=' + schema)
         return SQLServerUtils.escapeAndJoinSQLServer(arguments)
@@ -268,6 +278,7 @@ class OgrToSQLServer(GdalAlgorithm):
         precision = self.parameterAsBool(parameters, self.PRECISION, context)
         mssqlspatial_use_geometry_columns = self.parameterAsBool(parameters, self.MSSQLSPATIAL_USE_GEOMETRY_COLUMNS, context)
         mssqlspatial_use_bcp = self.parameterAsBool(parameters, self.MSSQLSPATIAL_USE_BCP, context)
+        trusted_security = self.parameterAsBool(parameters, self.TRUSTED_SECURITY, context
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
         arguments = []
