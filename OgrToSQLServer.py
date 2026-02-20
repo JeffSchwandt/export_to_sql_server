@@ -227,9 +227,8 @@ class OgrToSQLServer(GdalAlgorithm):
         if database:
             arguments.append('database=' + database + ';')
         if trusted_security:
-            arguments.append('trusted_security=' + trusted_security.toString() + ';'
-        else
-        {
+            arguments.append('trusted_security=' + trusted_security.toString() + ';')
+        else:
             if uid:
                 arguments.append('uid=' + uid + ';')
             if pwd:
@@ -278,7 +277,7 @@ class OgrToSQLServer(GdalAlgorithm):
         precision = self.parameterAsBool(parameters, self.PRECISION, context)
         mssqlspatial_use_geometry_columns = self.parameterAsBool(parameters, self.MSSQLSPATIAL_USE_GEOMETRY_COLUMNS, context)
         mssqlspatial_use_bcp = self.parameterAsBool(parameters, self.MSSQLSPATIAL_USE_BCP, context)
-        trusted_security = self.parameterAsBool(parameters, self.TRUSTED_SECURITY, context
+        trusted_security = self.parameterAsBool(parameters, self.TRUSTED_SECURITY, context)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
 
         arguments = []
